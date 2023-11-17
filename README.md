@@ -1,9 +1,8 @@
 # pythonFlask
-Screens for lab4
 
-<img src="./screenshots/login.png" />
-<img src="./screenshots/info.png" />
-<img src="./screenshots/info2.png" />
-<img src="./screenshots/info3.png" />
-<img src="./screenshots/info4.png" />
-<img src="./screenshots/info5.png" />
+Screenshots for lab6
+
+<img src="./screenshots/todo.png" />
+<img src="./screenshots/todo1.png" />
+<img src="./screenshots/todo2.png" />
+<img src="./screenshots/todo3.png" />

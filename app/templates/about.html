@@ -1,12 +1,17 @@
-{% extends "home.html" %}
+{% extends "base.html" %}
 {% block title %} <title>about</title> {% endblock %}
 {% block content %}
-    <div class="centered p-4">
+    <div class="centered p-4 pt-0">
         <h1 class="fst-italic">About me</h1>
         <img src="{{ url_for('static', filename='images/me.jpg') }}" height="200px"><br>
-        <h4 class="fst-italic">Hello, my name is Marian and I study at Vasyl Stefanyk Precarpathian University at the Faculty of Mathematics and Informatics. My hobby is singing, I am singing 13 years. I have a lot of <a href="{{ url_for('soft_skills') }}">soft skills</a> and <a href="{{ url_for('hard_skills') }}">hard skills</a>. I have six web-applications written on TypeScript with Nextjs framework. All of them you can see on my GitHub.</h4><br>
+        <h4 class="fst-italic pt-2">Hello, my name is Marian and I study at Vasyl Stefanyk Precarpathian University at the Faculty of Mathematics and Informatics. My hobby is singing, I am singing 13 years. I have a lot of <a href="{{ url_for('soft_skills') }}">soft skills</a> and <a href="{{ url_for('hard_skills') }}">hard skills</a>. I have six web-applications written on TypeScript with Nextjs framework. All of them you can see on my GitHub.</h4><br>
     </div>
 {% endblock %}
 {% block marg %}
-    <span class="centered2 p-4 d-block"><a href="{{ url_for('home') }}" class="fst-italic link-secondary text-dark">Home page</a></span>
+    <span class="centered2 p-4"><a href="{{ url_for('base') }}" class="fst-italic link-secondary text-dark">Base page</a></span>
+{% endblock %}
+{% block footer %}
+    <div>
+        <p class="display-10 fst-italic">@marian_pidchahsyi</p>
+    </div>
 {% endblock %}
