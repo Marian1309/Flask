@@ -1,5 +1,5 @@
 # pythonFlask
-Screens for lab4
+Screens for lab5
 
 <img src="./screenshots/login.png" />
 <img src="./screenshots/info.png" />
