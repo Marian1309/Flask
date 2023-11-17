@@ -56,3 +56,10 @@ class ItemForm(FlaskForm):
     title = StringField('Enter title here')
     description = StringField('Enter description here')
     submit = SubmitField('Add Item')
+
+
+class FeedbackForm(FlaskForm):
+    username = StringField('Enter username here')
+    feedback = StringField('Enter feedback here')
+    submit = SubmitField('Add feedback')
+

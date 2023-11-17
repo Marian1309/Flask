@@ -1,8 +1,6 @@
 # pythonFlask
 
-Screenshots for lab6
+Screenshots for feedbacks
 
-<img src="./screenshots/todo.png" />
-<img src="./screenshots/todo1.png" />
-<img src="./screenshots/todo2.png" />
-<img src="./screenshots/todo3.png" />
+<img src="./screenshots/feedback.png" />
+<img src="./screenshots/feedback1.png" />
