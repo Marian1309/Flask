@@ -1,15 +1,19 @@
 import os
 import time
-
+from flask_login import current_user, logout_user, login_required
 from flask import render_template, request, make_response, redirect, url_for, session, flash
 import platform
 from datetime import datetime, timedelta
+from flask_login import login_user
+from PIL import Image
 from app import app
 import json
-from .forms import LoginForm, RegistrationForm, LogoutForm, LoginForm2, ChangePasswordForm, AddCookieForm, DeleteCookieForm, DeleteAllCookiesForm, ItemForm, FeedbackForm, UserForm, ChangeUserForm, DeleteUserForm
+from .forms import LoginForm, RegistrationForm, ChangeUserPassword, UpdateAccountForm, LogoutForm, LoginForm2, \
+    ChangePasswordForm, \
+    AddCookieForm, DeleteCookieForm, DeleteAllCookiesForm, ItemForm, FeedbackForm, UserForm, ChangeUserForm, \
+    DeleteUserForm
 from .models import Todo, db, Feedback, User
 from werkzeug.utils import secure_filename
-from flask_login import login_user, current_user, logout_user, login_required
 
 my_soft_skills = ["communication", "hard-working", "polite"]
 
@@ -51,10 +55,58 @@ def choice():
     return render_template('choice.html')
 
 
-@app.route('/my_profile')
+@app.route('/change-user-password', methods=['GET', 'POST'])
+@login_required
+def change_user_password():
+    form = ChangeUserPassword()
+    if form.validate_on_submit():
+        old_password = form.old_password.data
+        new_password = form.password.data
+        user = User.query.filter_by(email=current_user.email).first()
+        if user.password == old_password:
+            user.password = new_password
+            db.session.commit()
+        return redirect(url_for("my_profile"))
+    return render_template('change_password.html', form=form)
+
+
+@app.after_request
+def after_request(response):
+    if current_user:
+        current_user.last_seen = datetime.now()
+        try:
+            db.session.commit()
+        except:
+            flash('Error while update user last seen!', 'danger')
+    return response
+
+
+@app.route('/my_profile', methods=['GET', 'POST'])
 @login_required
 def my_profile():
-    return render_template('my_profile.html', user=current_user)
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.about_me = form.about_me.data
+        profile_image = form.image.data
+        if profile_image:
+            filename = secure_filename(profile_image.filename)
+            unique_filename = f"{current_user.username}_{int(time.time())}_{filename}.jpg"
+            image = Image.open(profile_image)
+            resized_image = image.resize((150, 150))
+            resized_file_path = os.path.join(app.config['UPLOADED_PHOTOS_DEST'], unique_filename)
+            resized_image.save(resized_file_path)
+            profile_image_path = f'static/images/{unique_filename}'
+            current_user.image_file = profile_image_path
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('my_profile'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.about_me.data = current_user.about_me
+    return render_template('my_profile.html', form=form)
 
 
 @app.route("/logout-new")
@@ -160,7 +212,8 @@ def user():
             db.session.commit()
         return redirect(url_for("user"))
 
-    return render_template('users.html', users=users, users_amount=users_amount, form=form, del_form=del_form, change_form=change_form)
+    return render_template('users.html', users=users, users_amount=users_amount, form=form, del_form=del_form,
+                           change_form=change_form)
 
 
 @app.route("/feedback", methods=['GET', 'POST'])
@@ -221,7 +274,8 @@ def base():
     os_info = platform.platform()
     user_agent_info = request.headers.get('User-Agent')
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return render_template("base.html", os_info=os_info, user_agent_info=user_agent_info, current_time=current_time, nav_links=nav_links)
+    return render_template("base.html", os_info=os_info, user_agent_info=user_agent_info, current_time=current_time,
+                           nav_links=nav_links)
 
 
 @app.route('/about')
@@ -364,4 +418,3 @@ def login():
                     flash("You aren't logged in", category="danger")
 
     return render_template("login.html", form_main=form_main)
-
