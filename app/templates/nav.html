@@ -1,0 +1,9 @@
+<nav class="nav d-flex justify-content-between">
+    <ul>
+        <h3>
+            {% for link in nav_links %}
+                <li class="fst-italic"><a class="p-2 link-secondary" href="{{ url_for(link['url']) }}">{{ link['text'] }}</a></li><br>
+            {% endfor %}
+        </h3>
+    </ul>
+</nav>

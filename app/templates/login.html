@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %} <title>login</title> {% endblock %}
+{% block content %}
+{% from "macros.html" import render_field %}
+    <div class="centered2 p-4">
+        <h1 class="fst-italic">Form page</h1>
+        <form class="row g-3" action="{{ url_for('login') }}" method="POST" novalidate>
+            {{ form_main.csrf_token }}
+            {{ render_field(form_main.username, class="form-control") }}
+            {{ render_field(form_main.password, class="form-control") }}
+            {{ render_field(form_main.remember, class="form-check-input") }}
+            {{ form_main.submit(class="btn btn-primary mb-3 bg-dark") }}
+        </form>
+    </div>
+
+{% endblock %}
+{% block marg %}
+    <span class="centered2 p-4"><a href="{{ url_for('base') }}" class="fst-italic link-secondary text-dark">Base page</a></span>
+{% endblock %}
+{% block footer %}
+    <div>
+        <p class="display-10 fst-italic">@marian_pidchashyi</p>
+    </div>
+{% endblock %}
