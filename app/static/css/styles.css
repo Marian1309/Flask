@@ -104,3 +104,7 @@ h1.title,
 nav {
   text-align: center;
 }
+
+a{
+    text-decoration: none;
+}

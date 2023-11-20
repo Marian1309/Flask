@@ -9,6 +9,7 @@ import json
 from .forms import LoginForm, RegistrationForm, LogoutForm, LoginForm2, ChangePasswordForm, AddCookieForm, DeleteCookieForm, DeleteAllCookiesForm, ItemForm, FeedbackForm, UserForm, ChangeUserForm, DeleteUserForm
 from .models import Todo, db, Feedback, User
 from werkzeug.utils import secure_filename
+from flask_login import login_user, current_user, logout_user, login_required
 
 my_soft_skills = ["communication", "hard-working", "polite"]
 
@@ -17,7 +18,6 @@ my_hard_skills = ["Java", "Spring", "OOD", "Rest api", "MySql", "Postgresql", "P
 cookies = []
 
 nav_links = [
-    {"text": "Home page", "url": "home"},
     {"text": "About me", "url": "about"},
     {"text": "My soft skills", "url": "soft_skills"},
     {"text": "My hard skills", "url": "hard_skills"},
@@ -26,8 +26,42 @@ nav_links = [
     {"text": "Feedback page", "url": "feedback"},
     {"text": "User page", "url": "user"},
     {"text": "Register", "url": "register"},
-    {"text": "Login2", "url": "login2"}
+    {"text": "Login3", "url": "login3"},
+    {"text": "Logout new", "url": "logout_new"},
+    {"text": "Choice", "url": "choice"},
+    {"text": "Profile", "url": "my_profile"}
 ]
+
+
+@app.route("/login3", methods=['GET', 'POST'])
+def login3():
+    if current_user.is_authenticated:
+        return redirect(url_for('choice'))
+    form = LoginForm2()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        login_user(user, remember=form.remember.data)
+        flash('You have been logged in!', category='success')
+        return redirect(url_for('base'))
+    return render_template('login2.html', form=form)
+
+
+@app.route("/choice")
+def choice():
+    return render_template('choice.html')
+
+
+@app.route('/my_profile')
+@login_required
+def my_profile():
+    return render_template('my_profile.html', user=current_user)
+
+
+@app.route("/logout-new")
+def logout_new():
+    logout_user()
+    flash("You have been logged out", category='success')
+    return redirect(url_for('base'))
 
 
 @app.route("/register", methods=['GET', 'POST'])
