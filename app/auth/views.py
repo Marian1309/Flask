@@ -88,7 +88,7 @@ def register():
             resized_image.save(resized_file_path)
             profile_image_path = f'static/images/{unique_filename}'
         else:
-            profile_image_path = 'static/images/my_photo.jpg'
+            profile_image_path = 'static/images/Me.jpg'
 
         if new_username and new_email and new_password:
             user = User(username=new_username, email=new_email, image_file=profile_image_path)

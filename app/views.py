@@ -2,7 +2,6 @@ from flask import render_template, request, Blueprint
 import platform
 from datetime import datetime
 
-
 appb = Blueprint("appb", __name__, template_folder="templates")
 
 nav_links = [
@@ -17,10 +16,12 @@ nav_links = [
     {"text": "Logout new", "url": "auth.logout_new"},
     {"text": "Choice", "url": "auth.choice"},
     {"text": "Cookie", "url": "cookie.login"},
-    {"text": "Profile", "url": "auth.my_profile"}
+    {"text": "Profile", "url": "auth.my_profile"},
+    {"text": "Create post", "url": "post.create_post"},
+    {"text": "Show posts", "url": "post.list_posts"},
+    {"text": "Create category", "url": "post.create_category"},
 
 ]
-
 
 
 @appb.route('/')
