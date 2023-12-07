@@ -43,7 +43,7 @@ def create_app(config_name='local'):
     return app
 
 
-def create_test(config_name='test'):
+def create_test(config_name='tests'):
     app = Flask(__name__)
     app.config["UPLOADED_PHOTOS_DEST"] = "app/static/images/"
     app.config['STATIC_FOLDER'] = "app/static/images/"

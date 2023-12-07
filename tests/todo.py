@@ -9,19 +9,18 @@ from app.todo.model import Todo
 class TestTodoBlueprint(TestCase):
 
     def create_app(self):
-        app = create_app('test')
+        app = create_app('tests')
         return app
 
     def setUp(self):
+        db.create_all()
         self.todo = Todo(title='Test Todo', description='Test description', complete=False)
         db.session.add(self.todo)
         db.session.commit()
 
     def tearDown(self):
-        all_todos = db.session.query(Todo).all()
-        for todo in all_todos:
-            db.session.delete(todo)
-        db.session.commit()
+        db.session.remove()
+        db.drop_all()
 
     def test_todo_get(self):
         response = self.client.get('/todo')
