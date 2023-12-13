@@ -1,7 +1,9 @@
 from flask import Flask
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+
 from config import config
 
 db = SQLAlchemy()
@@ -31,6 +33,7 @@ def create_app(config_name='local'):
         from app.todo import todo_br
         from app.views import appb
         from app.post import post
+        from app.api2 import api_todo_br2
 
         app.register_blueprint(about)
         app.register_blueprint(auth)

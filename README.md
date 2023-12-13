@@ -1,5 +1,5 @@
 # pythonFlask
 
-Screenshots for Lab12
+Screenshots for Lab13
 
-<img src="./screenshots/1.jpg" />
+[Screenshots](lab13.docx)
