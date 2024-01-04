@@ -1,7 +1,54 @@
 from flask import request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required
+from flask_login import login_user, current_user
+from werkzeug.security import check_password_hash
 
-from ..todo.model import Todo, db
+
 from . import api_todo_br2
+from .models import Token
+from ..auth.model import User
+from ..todo.model import Todo, db
+
+
+@api_todo_br2.route('/todo-api2/refresh', methods=['POST'])
+@jwt_required()
+def refresh():
+    new_access_token = create_access_token(identity=current_user.id)
+    token = Token.query.filter_by(user_id=current_user.id).first()
+    token.jwt = new_access_token
+    db.session.commit()
+    return jsonify(access_token=new_access_token), 200
+
+
+@api_todo_br2.route('/todo-api2/revoke', methods=['DELETE'])
+@jwt_required()
+def revoke():
+    token = Token.query.filter_by(user_id=current_user.id).first()
+    db.session.delete(token)
+    db.session.commit()
+    return jsonify({"message": "Token revoked"}), 200
+
+
+@api_todo_br2.route('/todo-api2/login', methods=['POST'])
+def login():
+    user_data = request.get_json()
+    email = user_data.get('email')
+    password = user_data.get('password')
+
+    user = User.query.filter_by(email=email).first()
+
+    if user and check_password_hash(user.password, password):
+        access_token = create_access_token(identity=user.id)
+        new_token = Token(
+            jwt=access_token,
+            user_id=user.id
+        )
+        db.session.add(new_token)
+        db.session.commit()
+        login_user(user)
+        return jsonify(access_token=access_token), 200
+    else:
+        return jsonify({"message": "Invalid email or password"}), 401
 
 
 @api_todo_br2.route('/todo-api2', methods=['GET'])
@@ -18,6 +65,7 @@ def get():
 
 
 @api_todo_br2.route('/todo-api2/post', methods=['POST'])
+@jwt_required()
 def post():
     new_data = request.get_json()
     title = new_data.get('title')
@@ -39,6 +87,7 @@ def post():
 
 
 @api_todo_br2.route("/todo-api2/<int:todo_id>", methods=['GET'])
+@jwt_required()
 def get_by_id(todo_id):
     todo = db.session.query(Todo).filter(Todo.id == todo_id).first()
     if todo:
@@ -54,6 +103,7 @@ def get_by_id(todo_id):
 
 
 @api_todo_br2.route("/todo-api2/<int:todo_id>", methods=['DELETE'])
+@jwt_required()
 def delete_by_id(todo_id):
     todo = db.session.query(Todo).filter(Todo.id == todo_id).first()
     if todo:
@@ -71,6 +121,7 @@ def delete_by_id(todo_id):
 
 
 @api_todo_br2.route("/update-complete-api/<int:todo_id>", methods=['PUT'])
+@jwt_required()
 def update_complete(todo_id):
     todo = db.session.query(Todo).filter(Todo.id == todo_id).first()
     if todo:
@@ -91,6 +142,7 @@ def update_complete(todo_id):
 
 
 @api_todo_br2.route("/update-api/<int:todo_id>", methods=['PUT'])
+@jwt_required()
 def update(todo_id):
     todo = db.session.query(Todo).filter(Todo.id == todo_id).first()
     if todo:
@@ -113,3 +165,5 @@ def update(todo_id):
         return {
             "message": "todo is not found"
         }, 404
+
+

@@ -1,3 +1,4 @@
+from flask_jwt_extended import JWTManager
 from flask_wtf import CSRFProtect
 from flask import Flask
 from os import environ, path
@@ -13,6 +14,7 @@ class Config:
     DEVELOPMENT = False
     SECRET_KEY = environ.get('SECRET_KEY') or 'secret'
     FLASK_SECRET = SECRET_KEY
+    JWT_SECRET_KEY = SECRET_KEY
 
 
 class LocalConfig(Config):
@@ -25,7 +27,7 @@ class LocalConfig(Config):
 class TestConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///tests.sqlite'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///test.sqlite'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -33,5 +35,5 @@ csrf.init_app(app)
 
 config = {
     'local': LocalConfig,
-    'tests': TestConfig
+    'test': TestConfig
 }
