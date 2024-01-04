@@ -1,13 +1,26 @@
 from flask import Flask
-
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
+from flask_swagger_ui import get_swaggerui_blueprint
+from flask_sqlalchemy import SQLAlchemy
 
 from config import config
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+ma = Marshmallow()
+
+SWAGGER_URL="/swagger"
+API_URL="/static/swagger.json"
+
+swagger_ui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': 'lab3Flask'
+    }
+)
 
 
 def create_app(config_name='local'):
@@ -34,7 +47,7 @@ def create_app(config_name='local'):
         from app.views import appb
         from app.post import post
         from app.api2 import api_todo_br2
-
+        from app.accounts_api.views import api_todo_br3
         app.register_blueprint(about)
         app.register_blueprint(auth)
         app.register_blueprint(cookie)
@@ -42,11 +55,13 @@ def create_app(config_name='local'):
         app.register_blueprint(todo_br)
         app.register_blueprint(appb)
         app.register_blueprint(post)
-
+        app.register_blueprint(api_todo_br2)
+        app.register_blueprint(api_todo_br3)
+        app.register_blueprint(swagger_ui_blueprint, url_prefix=SWAGGER_URL)
     return app
 
 
-def create_test(config_name='tests'):
+def create_test(config_name='test'):
     app = Flask(__name__)
     app.config["UPLOADED_PHOTOS_DEST"] = "app/static/images/"
     app.config['STATIC_FOLDER'] = "app/static/images/"
